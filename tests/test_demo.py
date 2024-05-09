@@ -1,20 +1,34 @@
-from app.demo import add,sub,mul,div,discount_season
+from app.demo import ShoppingCart
 import pytest
 
-@pytest.mark.skip("Skipping for some reason")
-def test_add():
-  assert add(1, 2) == 3
+@pytest.fixture
+def cart():
+  return ShoppingCart()
 
-def test_sub():
-  assert sub(3,2) == 1
+@pytest.mark.skip("")
+def test_add(cart):
+  cart.add_item('apple',2)
+  assert cart.get_item_count("apple") == 2
+  assert cart.get_total_items() == 2
 
-@pytest.mark.skipif(discount_season(),reason="Skip if it's discount season")
-def test_mul():
-  assert mul(2,2) == 4
+def test_remove_item(cart):
+  cart.add_item('apple',3)
+  cart.remove_item('apple',1)
+  assert cart.get_item_count("apple") == 2
+  assert cart.get_total_items() == 2
 
-def test_div():
-  assert div(4,2) == 2
+def test_get_cart_items(cart):
+  cart.add_item('apple',3)
+  cart.add_item('orange',2)
+  items = cart.get_cart_items() 
+  assert "apple" in items
+  assert "orange" in items
 
-  # Case for asserting exception
-  with pytest.raises(ValueError):
-    div(4,0)
+def test_clear_cart(cart):
+  cart.add_item('apple',3)
+  cart.add_item('orange',2)
+  cart.clear_cart()
+  assert cart.get_total_items() == 0
+  assert cart.get_cart_items() == []
+
+
